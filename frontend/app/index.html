@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GovChain</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.2/ethers.umd.min.js"></script>
+<link rel="stylesheet" href="../shared/theme.css" />
+<script src="../shared/abi.js"></script>
+<script src="../shared/config.js"></script>
+</head>
+<body>
+
+<header class="hero">
+  <div>
+    <div class="hero-eyebrow">GovChain · Verification Layer · Pilot Deployment</div>
+    <h1>Anchor it. Verify it.<br />Make it provable.</h1>
+    <div class="hero-sub" id="institutionLabel">One wallet, every role — the console adapts to whichever account is connected.</div>
+  </div>
+  <div class="wallet-block">
+    <button id="connectBtn">Connect Wallet</button>
+    <div class="wallet-addr" id="walletPill"><span class="dot off"></span>Not connected</div>
+    <div class="reputation-pill" id="reputationPill" style="display:none;">★ <span id="reputationValue">0</span> reputation tokens</div>
+  </div>
+</header>
+
+<nav class="tabbar">
+  <button class="tab-btn active" data-tab="institution">Institution Console</button>
+  <button class="tab-btn" data-tab="citizen">Citizen App</button>
+  <button class="tab-btn" data-tab="review">Review Panel</button>
+  <button class="tab-btn" data-tab="audit">Audit Export</button>
+</nav>
+<div class="role-note" id="roleNote"></div>
+
+<!-- ============================ INSTITUTION ============================ -->
+<div class="tab-panel active" id="panel-institution">
+  <section class="form-block">
+    <div class="form-block-head"><h2>New Anchor Entry</h2><span class="form-tag">FORM GC-02 · RECORD ANCHORING</span></div>
+    <div class="form-body">
+      <div class="field">
+        <div class="field-num">01</div>
+        <div class="field-main">
+          <label>Record ID</label>
+          <div style="display:flex; gap:10px;">
+            <input id="inst_recordId" class="mono-field" placeholder="TENDER-2026-014" maxlength="31" />
+            <button class="ghost" id="inst_generateId" type="button" style="white-space:nowrap;">Generate ID</button>
+          </div>
+          <div class="hint">A short unique code (≤31 characters).</div>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-num">02</div>
+        <div class="field-main">
+          <label>Record Type</label>
+          <select id="inst_recordType">
+            <option value="0">Tender Award</option>
+            <option value="1">Permit Approval</option>
+            <option value="2">Budget Disbursement</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-num">03</div>
+        <div class="field-main">
+          <label>Source Document</label>
+          <div class="dropzone" id="inst_dropzone">Drop the decision document here, or click to choose a file<br /><span style="font-size:11px;">— or paste its text below —</span></div>
+          <input type="file" id="inst_fileInput" />
+          <textarea id="inst_docContent" rows="3" placeholder="...paste tender decision text here" style="margin-top:12px;"></textarea>
+          <div class="hint">Hashed locally in your browser — never uploaded.</div>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-num">04</div>
+        <div class="field-main">
+          <label>Computed Hash (keccak256)</label>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <input id="inst_computedHash" class="mono-field" readonly placeholder="— awaiting document —" />
+            <button class="copy-btn" id="inst_copyHash" type="button">copy</button>
+          </div>
+        </div>
+      </div>
+      <div style="padding:22px 0 24px; display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+        <button id="inst_anchorBtn">Anchor Record</button>
+        <span style="font-size:12px; color:var(--text-faint);">Signed client-side — no key ever leaves MetaMask.</span>
+      </div>
+      <div id="inst_status" class="status-line"></div>
+    </div>
+  </section>
+
+  <section class="ledger">
+    <div class="ledger-head"><h2>Anchored Records</h2><span class="live-pill"><span class="pulse"></span>live</span></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>No.</th><th>Record ID</th><th>Type</th><th>Hash</th><th>Anchored By</th><th>Timestamp</th></tr></thead>
+      <tbody id="inst_recordsBody"><tr class="empty-row"><td colspan="6">Connect your wallet to load records.</td></tr></tbody>
+    </table></div>
+  </section>
+
+  <section class="ledger">
+    <div class="ledger-head"><h2>Flagged Discrepancies</h2><span class="live-pill"><span class="pulse"></span>live</span></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>No.</th><th>Flag ID</th><th>Record ID</th><th>Status</th><th>Flagged By</th><th>Evidence</th></tr></thead>
+      <tbody id="inst_flagsBody"><tr class="empty-row"><td colspan="6">No discrepancies flagged yet.</td></tr></tbody>
+    </table></div>
+  </section>
+</div>
+
+<!-- ============================ CITIZEN ============================ -->
+<div class="tab-panel" id="panel-citizen">
+  <section class="ledger">
+    <div class="ledger-head"><h2>Public Transparency Dashboard</h2></div>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-num" id="cit_statRecords">—</div><div class="stat-label">Anchored Records</div></div>
+      <div class="stat-card"><div class="stat-num" id="cit_statFlags">—</div><div class="stat-label">Flags Raised</div></div>
+      <div class="stat-card"><div class="stat-num" id="cit_statResolved">—</div><div class="stat-label">Resolved Disputes</div></div>
+      <div class="stat-card"><div class="stat-num" id="cit_statAvgTime">—</div><div class="stat-label">Avg. Resolution Time</div></div>
+    </div>
+  </section>
+
+  <section class="form-block">
+    <div class="form-block-head"><h2>Verify a Record</h2><span class="form-tag">FORM GC-01 · PUBLIC VERIFICATION</span></div>
+    <div class="form-body">
+      <div class="field">
+        <div class="field-num">01</div>
+        <div class="field-main">
+          <label>Record ID</label>
+          <input id="cit_recordId" class="mono-field" placeholder="TENDER-2026-014" maxlength="31" />
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-num">02</div>
+        <div class="field-main">
+          <label>The Document You Received</label>
+          <div class="dropzone" id="cit_dropzone">Drop the document here, or click to choose a file<br /><span style="font-size:11px;">— or paste its text below —</span></div>
+          <input type="file" id="cit_fileInput" />
+          <textarea id="cit_docContent" rows="3" placeholder="...paste the document text here" style="margin-top:12px;"></textarea>
+          <div class="hint">Hashed locally — never uploaded anywhere.</div>
+        </div>
+      </div>
+      <div style="padding:22px 0 6px;"><button id="cit_verifyBtn">Verify Record</button></div>
+      <div id="cit_verifyStatus" class="status-line"></div>
+      <div class="verify-result" id="cit_verifyResult">
+        <div class="verify-result-title" id="cit_verifyResultTitle"></div>
+        <div class="verify-result-detail" id="cit_verifyResultDetail"></div>
+        <div style="margin-top:14px;" id="cit_flagPrompt"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="form-block" id="cit_flagSection" style="display:none;">
+    <div class="form-block-head"><h2>Flag This Discrepancy</h2><span class="form-tag">FORM GC-03</span></div>
+    <div class="form-body">
+      <div class="field">
+        <div class="field-num">01</div>
+        <div class="field-main">
+          <label>Evidence / Explanation</label>
+          <textarea id="cit_evidence" rows="3" placeholder="Describe the mismatch..."></textarea>
+          <div class="hint">Requires a connected wallet.</div>
+        </div>
+      </div>
+      <div style="padding:18px 0 4px;"><button id="cit_submitFlagBtn">Submit Flag</button></div>
+      <div id="cit_flagStatus" class="status-line"></div>
+    </div>
+  </section>
+
+  <section class="ledger" id="cit_myFlagsSection" style="display:none;">
+    <div class="ledger-head"><h2>My Flags</h2><span class="live-pill"><span class="pulse"></span>live</span></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>No.</th><th>Flag ID</th><th>Record ID</th><th>Status</th><th>Evidence</th></tr></thead>
+      <tbody id="cit_myFlagsBody"><tr class="empty-row"><td colspan="5">You haven't flagged anything yet.</td></tr></tbody>
+    </table></div>
+  </section>
+
+  <section class="ledger">
+    <div class="ledger-head"><h2>Recently Anchored</h2><span class="live-pill"><span class="pulse"></span>live</span></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>No.</th><th>Record ID</th><th>Type</th><th>Institution</th><th>Timestamp</th></tr></thead>
+      <tbody id="cit_recentBody"><tr class="empty-row"><td colspan="5">Loading…</td></tr></tbody>
+    </table></div>
+  </section>
+</div>
+
+<!-- ============================ REVIEW PANEL ============================ -->
+<div class="tab-panel" id="panel-review">
+  <section class="ledger">
+    <div class="ledger-head"><h2>Pending Review</h2><span class="live-pill"><span class="pulse"></span>live</span></div>
+    <div id="rev_pendingList"><div class="flag-card"><span style="color:var(--text-faint); font-size:13px;">Connect your wallet to load pending flags.</span></div></div>
+  </section>
+  <section class="ledger">
+    <div class="ledger-head"><h2>Review History</h2></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>No.</th><th>Flag ID</th><th>Record ID</th><th>Outcome</th><th>Flagged By</th></tr></thead>
+      <tbody id="rev_historyBody"><tr class="empty-row"><td colspan="5">No reviewed flags yet.</td></tr></tbody>
+    </table></div>
+  </section>
+</div>
+
+<!-- ============================ AUDIT EXPORT ============================ -->
+<div class="tab-panel" id="panel-audit">
+  <section class="form-block">
+    <div class="form-block-head"><h2>Export Parameters</h2><span class="form-tag">FORM GC-04 · AUDIT LOG EXPORT</span></div>
+    <div class="form-body">
+      <div class="field"><div class="field-num">01</div><div class="field-main"><label>From Date</label><input type="date" id="aud_fromDate" /></div></div>
+      <div class="field"><div class="field-num">02</div><div class="field-main"><label>To Date</label><input type="date" id="aud_toDate" /></div></div>
+      <div style="padding:20px 0 6px; display:flex; gap:12px; flex-wrap:wrap;">
+        <button id="aud_loadBtn">Load Records</button>
+        <button class="ghost" id="aud_exportCsvBtn" disabled>Download CSV</button>
+        <button class="ghost" id="aud_exportJsonBtn" disabled>Download JSON</button>
+      </div>
+      <div id="aud_status" class="status-line"></div>
+    </div>
+  </section>
+  <section class="ledger">
+    <div class="ledger-head"><h2>Matching Records</h2><span class="hero-eyebrow" id="aud_matchCount" style="margin:0;"></span></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>No.</th><th>Record ID</th><th>Type</th><th>Hash</th><th>Anchored By</th><th>Timestamp</th></tr></thead>
+      <tbody id="aud_recordsBody"><tr class="empty-row"><td colspan="6">Choose a date range and click "Load Records".</td></tr></tbody>
+    </table></div>
+  </section>
+</div>
+
+<div class="toast-stack" id="toastStack"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

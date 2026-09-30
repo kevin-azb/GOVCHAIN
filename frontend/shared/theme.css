@@ -434,3 +434,39 @@ tbody tr.new-row { animation: highlight 2.2s ease; }
 }
 .hash-compare-item { font-size: 11px; color: var(--text-faint); }
 .hash-compare-item .mono { display: block; margin-top: 4px; color: var(--text-dim); word-break: break-all; }
+
+/* ---- Tab navigation for the merged single-page app ---- */
+.tabbar {
+  display: flex;
+  gap: 4px;
+  padding: 0 40px;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  overflow-x: auto;
+}
+.tab-btn {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  color: var(--text-dim);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 13px;
+  padding: 16px 18px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+}
+.tab-btn:hover:not(:disabled) { color: var(--text); box-shadow: none; transform: none; }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+.role-note {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-faint);
+  padding: 10px 40px 0;
+}
