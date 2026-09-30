@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GovChain — Review Panel</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.2/ethers.umd.min.js"></script>
+    <link rel="stylesheet" href="../shared/theme.css" />
+    <script src="../shared/abi.js"></script>
+    <script src="../shared/config.js"></script>
+</head>
+
+<body>
+
+    <header class="hero">
+        <div>
+            <div class="hero-eyebrow">GovChain · Independent Oversight</div>
+            <h1>Judge it.<br />Close it out.</h1>
+            <div class="hero-sub">Investigate discrepancies citizens have flagged. Confirming a valid report
+                automatically rewards the citizen who raised it — no separate step.</div>
+        </div>
+        <div class="wallet-block">
+            <button id="connectBtn">Connect Wallet</button>
+            <div class="wallet-addr" id="walletPill"><span class="dot off"></span>Not connected</div>
+        </div>
+    </header>
+
+    <section class="ledger">
+        <div class="ledger-head">
+            <h2>Pending Review</h2>
+            <span class="live-pill"><span class="pulse"></span>live — updates automatically</span>
+        </div>
+        <div id="pendingList">
+            <div class="flag-card"><span style="color:var(--text-faint); font-size:13px;">Connect your wallet to load
+                    pending flags.</span></div>
+        </div>
+    </section>
+
+    <section class="ledger">
+        <div class="ledger-head">
+            <h2>Review History</h2>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Flag ID</th>
+                        <th>Record ID</th>
+                        <th>Outcome</th>
+                        <th>Flagged By</th>
+                    </tr>
+                </thead>
+                <tbody id="historyBody">
+                    <tr class="empty-row">
+                        <td colspan="5">No reviewed flags yet.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <div class="toast-stack" id="toastStack"></div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

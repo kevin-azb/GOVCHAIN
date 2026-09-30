@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GovChain — Citizen</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.2/ethers.umd.min.js"></script>
+<link rel="stylesheet" href="../shared/theme.css" />
+<script src="../shared/abi.js"></script>
+<script src="../shared/config.js"></script>
+</head>
+<body>
+
+<header class="hero">
+  <div>
+    <div class="hero-eyebrow">GovChain · Public Verification</div>
+    <h1>Trust,<br />checkable.</h1>
+    <div class="hero-sub">Verify any anchored procurement decision against what your district actually published — no wallet required to check.</div>
+  </div>
+  <div class="wallet-block">
+    <button id="connectBtn">Connect Wallet</button>
+    <div class="wallet-addr" id="walletPill"><span class="dot off"></span>Not connected</div>
+    <div class="reputation-pill" id="reputationPill" style="display:none;">★ <span id="reputationValue">0</span> reputation tokens</div>
+  </div>
+</header>
+
+<section class="ledger">
+  <div class="ledger-head"><h2>Public Transparency Dashboard</h2></div>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-num" id="statRecords">—</div><div class="stat-label">Anchored Records</div></div>
+    <div class="stat-card"><div class="stat-num" id="statFlags">—</div><div class="stat-label">Flags Raised</div></div>
+    <div class="stat-card"><div class="stat-num" id="statResolved">—</div><div class="stat-label">Resolved Disputes</div></div>
+    <div class="stat-card"><div class="stat-num" id="statAvgTime">—</div><div class="stat-label">Avg. Resolution Time</div></div>
+  </div>
+</section>
+
+<section class="form-block">
+  <div class="form-block-head">
+    <h2>Verify a Record</h2>
+    <span class="form-tag">FORM GC-01 · PUBLIC VERIFICATION</span>
+  </div>
+  <div class="form-body">
+
+    <div class="field">
+      <div class="field-num">01</div>
+      <div class="field-main">
+        <label>Record ID</label>
+        <input id="recordIdInput" class="mono-field" placeholder="TENDER-2026-014" maxlength="31" />
+        <div class="hint">Get this from the institution's public announcement.</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="field-num">02</div>
+      <div class="field-main">
+        <label>The Document You Received / Were Shown</label>
+        <div class="dropzone" id="dropzone">
+          Drop the document here, or click to choose a file<br />
+          <span style="font-size:11px;">— or paste its text below —</span>
+        </div>
+        <input type="file" id="fileInput" />
+        <textarea id="docContentInput" rows="3" placeholder="...paste the document text here" style="margin-top:12px;"></textarea>
+        <div class="hint">Hashed locally in your browser — never uploaded anywhere.</div>
+      </div>
+    </div>
+
+    <div style="padding:22px 0 6px;">
+      <button id="verifyBtn">Verify Record</button>
+    </div>
+    <div id="verifyStatus" class="status-line"></div>
+
+    <div class="verify-result" id="verifyResult">
+      <div class="verify-result-title" id="verifyResultTitle"></div>
+      <div class="verify-result-detail" id="verifyResultDetail"></div>
+      <div style="margin-top:14px;" id="flagPrompt"></div>
+    </div>
+  </div>
+</section>
+
+<section class="form-block" id="flagSection" style="display:none;">
+  <div class="form-block-head">
+    <h2>Flag This Discrepancy</h2>
+    <span class="form-tag">FORM GC-03 · DISCREPANCY REPORT</span>
+  </div>
+  <div class="form-body">
+    <div class="field">
+      <div class="field-num">01</div>
+      <div class="field-main">
+        <label>Evidence / Explanation</label>
+        <textarea id="evidenceInput" rows="3" placeholder="Describe the mismatch — what you were shown vs. what's anchored, and any supporting link or reference..."></textarea>
+        <div class="hint">Requires a connected wallet, since your flag is attributed to your address (FR1 identity, no personal data required).</div>
+      </div>
+    </div>
+    <div style="padding:18px 0 4px;">
+      <button id="submitFlagBtn">Submit Flag</button>
+    </div>
+    <div id="flagStatus" class="status-line"></div>
+  </div>
+</section>
+
+<section class="ledger" id="myFlagsSection" style="display:none;">
+  <div class="ledger-head">
+    <h2>My Flags</h2>
+    <span class="live-pill"><span class="pulse"></span>live — updates automatically</span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>No.</th><th>Flag ID</th><th>Record ID</th><th>Status</th><th>Evidence</th></tr></thead>
+      <tbody id="myFlagsBody"><tr class="empty-row"><td colspan="5">You haven't flagged anything yet.</td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ledger">
+  <div class="ledger-head">
+    <h2>Recently Anchored</h2>
+    <span class="live-pill"><span class="pulse"></span>live — updates automatically</span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>No.</th><th>Record ID</th><th>Type</th><th>Institution</th><th>Timestamp</th></tr></thead>
+      <tbody id="recentBody"><tr class="empty-row"><td colspan="5">Loading recent activity…</td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<div class="toast-stack" id="toastStack"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

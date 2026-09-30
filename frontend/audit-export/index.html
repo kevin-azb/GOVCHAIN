@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GovChain — Audit Export</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.2/ethers.umd.min.js"></script>
+<link rel="stylesheet" href="../shared/theme.css" />
+<script src="../shared/abi.js"></script>
+<script src="../shared/config.js"></script>
+</head>
+<body>
+
+<header class="hero">
+  <div>
+    <div class="hero-eyebrow">GovChain · Oversight Access</div>
+    <h1>Every record.<br />No permission needed.</h1>
+    <div class="hero-sub">Full anchored record history for this institution, independently queryable — no wallet, no approval from the institution required (NFR6).</div>
+  </div>
+</header>
+
+<section class="form-block">
+  <div class="form-block-head">
+    <h2>Export Parameters</h2>
+    <span class="form-tag">FORM GC-04 · AUDIT LOG EXPORT</span>
+  </div>
+  <div class="form-body">
+    <div class="field">
+      <div class="field-num">01</div>
+      <div class="field-main">
+        <label>From Date</label>
+        <input type="date" id="fromDate" />
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-num">02</div>
+      <div class="field-main">
+        <label>To Date</label>
+        <input type="date" id="toDate" />
+      </div>
+    </div>
+    <div style="padding:20px 0 6px; display:flex; gap:12px; flex-wrap:wrap;">
+      <button id="loadBtn">Load Records</button>
+      <button class="ghost" id="exportCsvBtn" disabled>Download CSV</button>
+      <button class="ghost" id="exportJsonBtn" disabled>Download JSON</button>
+    </div>
+    <div id="exportStatus" class="status-line"></div>
+  </div>
+</section>
+
+<section class="ledger">
+  <div class="ledger-head">
+    <h2>Matching Records</h2>
+    <span class="hero-eyebrow" id="matchCount" style="margin:0;"></span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>No.</th><th>Record ID</th><th>Type</th><th>Hash</th><th>Anchored By</th><th>Timestamp</th></tr></thead>
+      <tbody id="recordsBody"><tr class="empty-row"><td colspan="6">Choose a date range and click "Load Records".</td></tr></tbody>
+    </table>
+  </div>
+</section>
+
+<script src="app.js"></script>
+</body>
+</html>
