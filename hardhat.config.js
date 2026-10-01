@@ -1,7 +1,7 @@
 require("@nomicfoundation/hardhat-toolbox");
 require("dotenv").config();
 
-const AMOY_RPC_URL = process.env.AMOY_RPC_URL || "";
+const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL || "";
 const PRIVATE_KEY = process.env.PRIVATE_KEY || "";
 
 /** @type import('hardhat/config').HardhatUserConfig */
@@ -19,13 +19,13 @@ module.exports = {
     localhost: {
       url: "http://127.0.0.1:8545"
     },
-    // Polygon Amoy is the current public Polygon testnet (replaced Mumbai).
-    // Fill AMOY_RPC_URL and PRIVATE_KEY in a .env file before deploying here —
-    // never commit that file. Get free test MATIC from a Polygon Amoy faucet.
-    amoy: {
-      url: AMOY_RPC_URL,
+    // Ethereum Sepolia testnet. Fill SEPOLIA_RPC_URL and PRIVATE_KEY in a
+    // .env file before deploying here — never commit that file. Get free
+    // test ETH from a Sepolia faucet (e.g. Google Cloud Web3 faucet).
+    sepolia: {
+      url: SEPOLIA_RPC_URL,
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
-      chainId: 80002
+      chainId: 11155111
     }
   }
 };
