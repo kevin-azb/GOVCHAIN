@@ -1,0 +1,17 @@
+node_modules
+artifacts
+cache
+test
+scripts
+contracts
+.env
+.env.example
+.git
+.gitignore
+README.md
+hardhat.config.js
+package.json
+package-lock.json
+Dockerfile
+.dockerignore
+railway.json
