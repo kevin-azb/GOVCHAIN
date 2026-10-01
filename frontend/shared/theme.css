@@ -89,6 +89,12 @@ body {
 
 /* ---- Wallet block ---- */
 .wallet-block { text-align: right; flex-shrink: 0; }
+.brand-logo {
+  display: block;
+  height: 96px;
+  width: auto;
+  margin: 0 0 18px auto;
+}
 .wallet-addr {
   font-family: var(--font-mono);
   font-size: 12px;
